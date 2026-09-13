@@ -317,23 +317,44 @@ def apply_theme():
         }
 
         /* Tabs styling */
+        /* Modern iOS-Style Rounded Pill Tabs */
         .stTabs [data-baseweb="tab-list"] {
             gap: 6px;
-            background-color: #0b0f19;
-            padding: 6px;
-            border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.06);
+            background-color: #111827 !important;
+            padding: 5px !important;
+            border-radius: 9999px !important;
+            border: 1px solid rgba(255, 255, 255, 0.08) !important;
+            display: inline-flex !important;
+            width: 100% !important;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+        }
+        .stTabs [data-baseweb="tab-border"],
+        .stTabs [data-baseweb="tab-highlight"] {
+            display: none !important;
         }
         .stTabs [data-baseweb="tab"] {
-            padding: 8px 16px;
-            border-radius: 10px;
-            color: #64748b;
-            font-weight: 700;
-            font-size: 13px;
+            padding: 8px 18px !important;
+            border-radius: 9999px !important;
+            color: #94a3b8 !important;
+            font-weight: 700 !important;
+            font-size: 12.5px !important;
+            border: none !important;
+            background: transparent !important;
+            flex: 1 1 0 !important;
+            text-align: center !important;
+            justify-content: center !important;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        }
+        .stTabs [data-baseweb="tab"]:hover {
+            color: #ffffff !important;
+            background: rgba(255, 255, 255, 0.06) !important;
+            border-radius: 9999px !important;
         }
         .stTabs [aria-selected="true"] {
-            background-color: #1e293b !important;
-            color: #60a5fa !important;
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
+            color: #ffffff !important;
+            border-radius: 9999px !important;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.45) !important;
         }
 
         /* Metrics */
