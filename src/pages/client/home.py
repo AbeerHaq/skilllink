@@ -203,8 +203,40 @@ def render_home():
                 st.session_state.search_query = ""
                 navigate_to("providers")
 
-    # ---- Special Offers Section ----
+    # ---- Why SkillLink Stats & Trust Grid ----
     st.markdown("<div style='height:14px;'></div>", unsafe_allow_html=True)
+    st.markdown(
+        """
+        <div class='highlight-card' style='padding:14px 16px;margin-bottom:14px;'>
+            <div style='display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;'>
+                <b style='font-size:13.5px;color:#ffffff;'>⚡ Why SkillLink?</b>
+                <span style='font-size:10.5px;color:#34d399;font-weight:700;'>LIVE METRICS</span>
+            </div>
+            <div style='display:grid;grid-template-columns:1fr 1fr;gap:10px;'>
+                <div style='background:rgba(15,23,42,0.6);padding:8px 10px;border-radius:10px;border:1px solid rgba(255,255,255,0.06);'>
+                    <div style='font-size:17px;font-weight:800;color:#60a5fa;'>&lt; 8 min</div>
+                    <div style='font-size:10.5px;color:#94a3b8;'>Avg. Specialist Arrival</div>
+                </div>
+                <div style='background:rgba(15,23,42,0.6);padding:8px 10px;border-radius:10px;border:1px solid rgba(255,255,255,0.06);'>
+                    <div style='font-size:17px;font-weight:800;color:#fbbf24;'>4.85 ★</div>
+                    <div style='font-size:10.5px;color:#94a3b8;'>1,200+ Verified Jobs</div>
+                </div>
+                <div style='background:rgba(15,23,42,0.6);padding:8px 10px;border-radius:10px;border:1px solid rgba(255,255,255,0.06);'>
+                    <div style='font-size:17px;font-weight:800;color:#34d399;'>20% Lower</div>
+                    <div style='font-size:10.5px;color:#94a3b8;'>Direct Counter-Bidding</div>
+                </div>
+                <div style='background:rgba(15,23,42,0.6);padding:8px 10px;border-radius:10px;border:1px solid rgba(255,255,255,0.06);'>
+                    <div style='font-size:17px;font-weight:800;color:#a78bfa;'>100% Insured</div>
+                    <div style='font-size:10.5px;color:#94a3b8;'>NADRA & Police Checked</div>
+                </div>
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    # ---- Special Offers Section ----
+    st.markdown("<div style='height:4px;'></div>", unsafe_allow_html=True)
     st.markdown("<b style='font-size:15px;color:#f8fafc;'>🎁 Special Promotions</b>", unsafe_allow_html=True)
 
     for offer in OFFERS:

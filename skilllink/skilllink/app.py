@@ -1,5 +1,6 @@
 import streamlit as st
 
+from database import init_db
 from src.styles.theme import apply_theme
 from src.state.app_state import init_session_state
 from src.utils.navigation import navigate_to
@@ -10,6 +11,7 @@ from src.pages.client.providers import render_providers
 from src.pages.client.bookings import render_bookings
 from src.pages.client.chat import render_chat
 from src.pages.client.profile import render_profile
+from src.pages.client.confirmation import render_confirmation
 from src.pages.provider.dashboard import render_provider_dashboard
 
 st.set_page_config(
@@ -19,7 +21,10 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-# Apply styling and state initialization
+# 1. Initialize SQLite Database & Tables
+init_db()
+
+# 2. Apply styling and state initialization
 apply_theme()
 init_session_state()
 
@@ -93,5 +98,7 @@ elif page == "chat":
     render_chat()
 elif page == "profile":
     render_profile()
+elif page == "confirmation":
+    render_confirmation()
 else:
     render_home()

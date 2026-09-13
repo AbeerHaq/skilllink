@@ -54,6 +54,97 @@ def render_providers():
         unsafe_allow_html=True,
     )
 
+    # ==================== PROVIDER PROFILE VIEW ====================
+    prof_p = st.session_state.get("viewing_provider_profile")
+    if prof_p:
+        if st.button("← Back to Specialists List", key="btn_back_from_prof", type="secondary"):
+            st.session_state.viewing_provider_profile = None
+            st.rerun()
+
+        initials = "".join([part[0] for part in prof_p["name"].split()[:2]]).upper()
+        badge_text = prof_p.get("badge", "Verified Pro")
+
+        st.markdown(
+            f"""
+            <div class='startup-card' style='padding:20px 16px;text-align:center;'>
+                <div class='avatar-circle' style='width:68px;height:68px;font-size:24px;margin:0 auto 10px auto;'>{initials}</div>
+                <h3 style='margin:0;font-size:18px;color:#ffffff;'>{prof_p['name']}</h3>
+                <span style='color:#60a5fa;font-size:13px;font-weight:700;'>{prof_p['service']} Specialist</span> · <span class='badge-tag' style='font-size:10px;'>{badge_text}</span>
+                <div style='margin-top:8px;font-size:14px;color:#fbbf24;font-weight:700;'>
+                    ★ {prof_p['rating']} <span style='color:#94a3b8;font-size:12px;font-weight:400;'>({prof_p['trips']} verified completed jobs)</span>
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+        st.markdown(
+            f"""
+            <div class='startup-card'>
+                <b style='font-size:13.5px;color:#f8fafc;'>🛡️ Credentials & Verification</b>
+                <div style='margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:11.5px;'>
+                    <div style='background:rgba(16,185,129,0.1);padding:8px 10px;border-radius:10px;border:1px solid rgba(16,185,129,0.25);color:#34d399;'>
+                        ✓ NADRA CNIC Verified
+                    </div>
+                    <div style='background:rgba(16,185,129,0.1);padding:8px 10px;border-radius:10px;border:1px solid rgba(16,185,129,0.25);color:#34d399;'>
+                        ✓ Police Checked
+                    </div>
+                    <div style='background:rgba(59,130,246,0.1);padding:8px 10px;border-radius:10px;border:1px solid rgba(59,130,246,0.25);color:#93c5fd;'>
+                        🛡️ Safety Insured
+                    </div>
+                    <div style='background:rgba(59,130,246,0.1);padding:8px 10px;border-radius:10px;border:1px solid rgba(59,130,246,0.25);color:#93c5fd;'>
+                        ⚡ 99.4% On-Time
+                    </div>
+                </div>
+                <hr style='border-color:rgba(255,255,255,0.08);margin:12px 0;'>
+                <div style='font-size:12px;color:#cbd5e1;line-height:1.5;'>
+                    🚗 <b>Vehicle / Kit:</b> {prof_p['vehicle']}<br>
+                    📍 <b>Current Proximity:</b> {prof_p['distance']} away (ETA {prof_p['eta']})<br>
+                    💰 <b>Standard Asking Rate:</b> <span style='color:#60a5fa;font-weight:700;'>Rs. {prof_p['price']}</span>
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+        st.markdown(
+            """
+            <div class='startup-card'>
+                <b style='font-size:13.5px;color:#f8fafc;'>💬 Verified Customer Feedback</b>
+                <div style='margin-top:8px;background:#1e293b;padding:10px 12px;border-radius:12px;margin-bottom:8px;'>
+                    <div style='display:flex;justify-content:space-between;'>
+                        <b style='font-size:11.5px;color:#f8fafc;'>Ayesha K. · F-7 Islamabad</b>
+                        <span style='color:#fbbf24;font-size:11px;'>★★★★★</span>
+                    </div>
+                    <span style='color:#cbd5e1;font-size:11px;'>Extremely polite and arrived exactly on time. Fixed the issue with zero fuss!</span>
+                </div>
+                <div style='background:#1e293b;padding:10px 12px;border-radius:12px;'>
+                    <div style='display:flex;justify-content:space-between;'>
+                        <b style='font-size:11.5px;color:#f8fafc;'>Hamza N. · Blue Area</b>
+                        <span style='color:#fbbf24;font-size:11px;'>★★★★★</span>
+                    </div>
+                    <span style='color:#cbd5e1;font-size:11px;'>Great negotiation flexibility and very fair pricing. Highly recommended.</span>
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+        col_pr_b, col_pr_n = st.columns(2)
+        with col_pr_b:
+            if st.button(f"⚡ Book Now (Rs. {prof_p['price']})", type="primary", use_container_width=True, key="prof_book_now"):
+                st.session_state.booking_in_progress = prof_p
+                st.session_state.viewing_provider_profile = None
+                st.rerun()
+        with col_pr_n:
+            if st.button("🤝 Negotiate Fare", type="secondary", use_container_width=True, key="prof_neg_now"):
+                st.session_state.negotiating_with = prof_p
+                st.session_state.viewing_provider_profile = None
+                st.rerun()
+
+        render_bottom_nav()
+        return
+
     # ==================== NEGOTIATION MODAL ====================
     neg_p = st.session_state.get("negotiating_with")
     if neg_p:
@@ -115,7 +206,9 @@ def render_providers():
                     )
                     st.session_state.active_chat_provider = neg_p["name"]
                     st.session_state.negotiating_with = None
-                    navigate_to("bookings")
+                    st.session_state.last_confirmed_booking = created_b
+                    st.session_state.confirmation_balloons_shown = False
+                    navigate_to("confirmation")
                 else:
                     counter = int(neg_p["price"] * 0.9)
                     st.warning(f"⚠️ {neg_p['name']} countered with **Rs. {counter}**.")
@@ -192,8 +285,10 @@ def render_providers():
                 )
                 st.session_state.active_chat_provider = book_p["name"]
                 st.session_state.booking_in_progress = None
+                st.session_state.last_confirmed_booking = created_b
+                st.session_state.confirmation_balloons_shown = False
                 st.toast(f"Order confirmed with {book_p['name']}!")
-                navigate_to("bookings")
+                navigate_to("confirmation")
         with col_cb2:
             if st.button("Cancel", type="secondary", use_container_width=True):
                 st.session_state.booking_in_progress = None
@@ -229,14 +324,18 @@ def render_providers():
             unsafe_allow_html=True,
         )
 
-        col_n, col_b = st.columns(2)
+        col_prof, col_n, col_b = st.columns([1, 1.1, 1.1])
+        with col_prof:
+            if st.button("👤 Profile", key=f"p_prof_{p['id']}_{i}", type="secondary", use_container_width=True):
+                st.session_state.viewing_provider_profile = p
+                st.rerun()
         with col_n:
-            if st.button("🤝 Negotiate", key=f"p_neg_{p['id']}_{i}", type="secondary", use_container_width=True):
+            if st.button("🤝 Bid", key=f"p_neg_{p['id']}_{i}", type="secondary", use_container_width=True):
                 st.session_state.negotiating_with = p
                 st.session_state.booking_in_progress = None
                 st.rerun()
         with col_b:
-            if st.button("⚡ Book Now", key=f"p_book_{p['id']}_{i}", type="primary", use_container_width=True):
+            if st.button("⚡ Book", key=f"p_book_{p['id']}_{i}", type="primary", use_container_width=True):
                 st.session_state.booking_in_progress = p
                 st.session_state.negotiating_with = None
                 st.rerun()

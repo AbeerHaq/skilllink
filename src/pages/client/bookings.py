@@ -129,7 +129,8 @@ def render_bookings():
                     update_booking_step(job["id"], step_idx + 1)
                     if step_idx + 1 == 3:
                         st.balloons()
-                        st.toast("🎉 Job completed successfully!")
+                        st.session_state.bookings_tab = "history"
+                        st.toast("🎉 Job completed! Rate your specialist below.")
                     st.rerun()
     else:
         past_bookings = [b for b in bookings_list if b["status"] != "In Progress"]
@@ -164,17 +165,37 @@ def render_bookings():
 
             # Interactive Rating & Review if Completed and not yet rated
             if b["status"] == "Completed" and not has_rated:
-                with st.expander(f"⭐ Rate & Review {b['provider_name']}", expanded=False):
+                with st.expander(f"⭐ Leave Rating & Review for {b['provider_name']}", expanded=True):
                     stars = st.selectbox(
-                        "Rating",
+                        "Rating Score",
                         [5, 4, 3, 2, 1],
-                        format_func=lambda x: f"{'⭐' * x} ({x} Star{'s' if x > 1 else ''})",
+                        format_func=lambda x: f"{'⭐' * x} ({x} Stars - {'Outstanding' if x==5 else 'Good' if x==4 else 'Average' if x==3 else 'Poor'})",
                         key=f"star_sel_{b['id']}",
                     )
-                    review_in = st.text_input("Review / Feedback", placeholder="Great punctuality and clean work!", key=f"rev_txt_{b['id']}")
-                    if st.button("Submit Feedback ⭐", key=f"btn_rate_{b['id']}", type="primary", use_container_width=True):
+                    
+                    st.markdown("<span style='font-size:11px;color:#94a3b8;'>Quick Compliment Tags:</span>", unsafe_allow_html=True)
+                    cp1, cp2 = st.columns(2)
+                    with cp1:
+                        if st.button("⚡ Punctual & Fast", key=f"cmp1_{b['id']}", type="secondary", use_container_width=True):
+                            st.session_state[f"rev_val_{b['id']}"] = "Arrived very fast and punctual!"
+                            st.rerun()
+                        if st.button("🛠️ Expert Quality", key=f"cmp2_{b['id']}", type="secondary", use_container_width=True):
+                            st.session_state[f"rev_val_{b['id']}"] = "Outstanding quality of work and very professional!"
+                            st.rerun()
+                    with cp2:
+                        if st.button("💬 Polite & Friendly", key=f"cmp3_{b['id']}", type="secondary", use_container_width=True):
+                            st.session_state[f"rev_val_{b['id']}"] = "Extremely courteous and polite behavior."
+                            st.rerun()
+                        if st.button("🤝 Fair & Honest", key=f"cmp4_{b['id']}", type="secondary", use_container_width=True):
+                            st.session_state[f"rev_val_{b['id']}"] = "Honest pricing and transparent service."
+                            st.rerun()
+
+                    cur_text = st.session_state.get(f"rev_val_{b['id']}", "Professional, punctual, and clean service.")
+                    review_in = st.text_input("Review Details", value=cur_text, key=f"rev_txt_{b['id']}")
+                    if st.button("Submit Rating & Review ⭐", key=f"btn_rate_{b['id']}", type="primary", use_container_width=True):
                         submit_booking_rating(b["id"], stars, review_in)
-                        st.toast(f"Thank you for rating {b['provider_name']}!")
+                        st.balloons()
+                        st.toast(f"Thank you! Your {stars}★ review for {b['provider_name']} has been recorded.")
                         st.rerun()
 
             if st.button(f"🧾 View Receipt ({b['booking_code']})", key=f"rec_{b['id']}", type="secondary"):

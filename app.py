@@ -11,6 +11,7 @@ from src.pages.client.providers import render_providers
 from src.pages.client.bookings import render_bookings
 from src.pages.client.chat import render_chat
 from src.pages.client.profile import render_profile
+from src.pages.client.confirmation import render_confirmation
 from src.pages.provider.dashboard import render_provider_dashboard
 
 st.set_page_config(
@@ -97,5 +98,7 @@ elif page == "chat":
     render_chat()
 elif page == "profile":
     render_profile()
+elif page == "confirmation":
+    render_confirmation()
 else:
     render_home()

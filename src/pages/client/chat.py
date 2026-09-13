@@ -117,14 +117,30 @@ def render_chat():
 def send_db_message(sender: str, recipient: str, text: str):
     save_chat_message(sender, recipient, text)
 
-    # Automated realistic reply simulation
-    replies = [
-        "Understood, I am on my way!",
-        "Got it, arriving at your location shortly.",
-        "Sure, no problem at all!",
-        "Thanks for confirming, see you in 2 minutes.",
-    ]
-    simulated_reply = replies[len(text) % len(replies)]
+    t_lower = text.lower()
+    
+    # Context-aware intelligent auto-replies
+    if any(w in t_lower for w in ["eta", "minute", "time", "when", "how long", "der", "kahan", "late"]):
+        simulated_reply = "I am approximately 4 minutes away, navigating to your exact location!"
+    elif any(w in t_lower for w in ["gate", "door", "outside", "standing", "arrived", "reach", "floor", "lobby"]):
+        simulated_reply = "Got it! I see your spot. I am right outside near the main gate."
+    elif any(w in t_lower for w in ["call", "phone", "contact", "number", "dial"]):
+        simulated_reply = "I will dial you right now, or feel free to tap the 📞 call button at the top!"
+    elif any(w in t_lower for w in ["price", "fare", "cash", "money", "cost", "wallet", "discount", "pay"]):
+        simulated_reply = "The agreed fare is locked in the system. You can pay via Cash or Wallet seamlessly."
+    elif any(w in t_lower for w in ["salam", "hello", "hi", "hey", "assalam", "aoa"]):
+        simulated_reply = "Walaikum Assalam! Very glad to assist you. On my way with all necessary equipment."
+    elif any(w in t_lower for w in ["thank", "shukriya", "great", "ok", "okay", "sounds good", "perfect", "👍"]):
+        simulated_reply = "You're most welcome! Pleasure serving you via SkillLink."
+    else:
+        replies = [
+            "Understood, I am on my way with your job details in hand!",
+            "Got it! Arriving at your location in just a few minutes.",
+            "Sure, noted! Looking forward to assisting you.",
+            "Thanks for the update, see you shortly.",
+        ]
+        simulated_reply = replies[len(text) % len(replies)]
+
     save_chat_message(recipient, sender, simulated_reply)
     st.rerun()
 

@@ -89,6 +89,26 @@ def render_profile():
                 st.toast("Top-up successful: + Rs. 2,500 added to database!")
                 st.rerun()
 
+        st.markdown("<div style='height:8px;'></div>", unsafe_allow_html=True)
+        st.markdown("<b>Custom Amount Top-Up:</b>", unsafe_allow_html=True)
+        col_c_in, col_c_btn = st.columns([2.5, 1.5])
+        with col_c_in:
+            custom_topup = st.number_input(
+                "Amount (Rs.)",
+                min_value=100,
+                max_value=50000,
+                value=1500,
+                step=100,
+                label_visibility="collapsed",
+                key="custom_topup_num",
+            )
+        with col_c_btn:
+            if st.button("Top-Up ➔", type="primary", use_container_width=True, key="custom_topup_btn"):
+                new_b = update_wallet_balance(user_phone, float(custom_topup), "Custom Wallet Top-up")
+                st.session_state.wallet_balance = new_b
+                st.toast(f"Top-up successful: + Rs. {int(custom_topup):,} added to wallet!")
+                st.rerun()
+
         st.markdown("<div style='height:10px;'></div>", unsafe_allow_html=True)
         st.markdown("<b>Linked Payment Accounts:</b>", unsafe_allow_html=True)
         st.markdown(
