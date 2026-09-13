@@ -12,6 +12,45 @@ SERVICES = [
     {"code": "C", "label": "Cleaning", "icon": "🧹", "desc": "Home deep clean"},
 ]
 
+RATE_CARDS = {
+    "Plumber": [
+        {"item": "Tap / Faucet Leak Repair", "range": "Rs. 500 – 800", "avg": 650},
+        {"item": "Kitchen Sink / Drain Unclog", "range": "Rs. 800 – 1,200", "avg": 950},
+        {"item": "Toilet Commode & Flush Fitting", "range": "Rs. 1,200 – 1,800", "avg": 1500},
+        {"item": "Geyser / Water Tank Line Repair", "range": "Rs. 1,500 – 2,500", "avg": 2000},
+    ],
+    "Electrician": [
+        {"item": "Switchboard / Breaker Repair", "range": "Rs. 450 – 750", "avg": 600},
+        {"item": "Ceiling Fan / Chandelier Install", "range": "Rs. 600 – 1,000", "avg": 800},
+        {"item": "Wiring Short Circuit Troubleshooting", "range": "Rs. 1,000 – 1,800", "avg": 1400},
+        {"item": "UPS / Solar Inverter Connection", "range": "Rs. 1,800 – 3,500", "avg": 2500},
+    ],
+    "AC Repair": [
+        {"item": "General AC Filter & Jet Cleaning", "range": "Rs. 1,000 – 1,500", "avg": 1200},
+        {"item": "Gas Leakage Check & Refill", "range": "Rs. 3,500 – 5,500", "avg": 4200},
+        {"item": "Split AC Dismount & Re-Installation", "range": "Rs. 2,500 – 4,000", "avg": 3000},
+        {"item": "Capacitor / Relay Replacement", "range": "Rs. 1,200 – 2,000", "avg": 1600},
+    ],
+    "Ride": [
+        {"item": "Short City Trip (< 5 km)", "range": "Rs. 300 – 500", "avg": 400},
+        {"item": "Inter-Sector Route (5–12 km)", "range": "Rs. 550 – 850", "avg": 700},
+        {"item": "Airport / Long Corridor (> 20 km)", "range": "Rs. 1,400 – 2,200", "avg": 1700},
+        {"item": "Dedicated Hourly Chauffeur", "range": "Rs. 700 – 900 / hr", "avg": 800},
+    ],
+    "Delivery": [
+        {"item": "Small Parcel / Document (< 1 kg)", "range": "Rs. 200 – 350", "avg": 250},
+        {"item": "Food / Grocery Delivery Box", "range": "Rs. 300 – 500", "avg": 380},
+        {"item": "Medium Box Delivery (2–5 kg)", "range": "Rs. 450 – 700", "avg": 550},
+        {"item": "Express Priority (Under 30 mins)", "range": "Rs. 500 – 850", "avg": 650},
+    ],
+    "Cleaning": [
+        {"item": "Single Room Deep Clean", "range": "Rs. 1,000 – 1,500", "avg": 1200},
+        {"item": "2-Bed Complete Apartment", "range": "Rs. 3,500 – 5,500", "avg": 4500},
+        {"item": "Sofa & Upholstery Wash (per seat)", "range": "Rs. 400 – 650", "avg": 500},
+        {"item": "Kitchen & Bathroom Descaling", "range": "Rs. 1,500 – 2,500", "avg": 2000},
+    ],
+}
+
 PROVIDERS = [
     {
         "id": "p1",

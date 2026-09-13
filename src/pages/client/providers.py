@@ -2,7 +2,7 @@ import streamlit as st
 import random
 from database import get_all_providers, create_booking, create_negotiation, calculate_commission
 from src.utils.navigation import navigate_to, render_bottom_nav
-from src.data.mock_data import SERVICES
+from src.data.mock_data import SERVICES, RATE_CARDS
 from src.pages.client.booking_type_selector import render_booking_type_selector
 
 
@@ -54,6 +54,40 @@ def render_providers():
         f"<span style='color:#94a3b8;font-size:12px;font-weight:600;'>{len(filtered_providers)} verified professionals active in your area</span>",
         unsafe_allow_html=True,
     )
+
+    # ---- Standard Market Rate Card & Price Estimator ----
+    active_rate_cat = service_filter if service_filter in RATE_CARDS else (st.session_state.get("selected_service") if st.session_state.get("selected_service") in RATE_CARDS else "Plumber")
+    
+    with st.expander(f"🏷️ Standard Rate Card: {active_rate_cat} Services", expanded=(service_filter != "All")):
+        st.markdown(
+            f"""
+            <div style='margin-bottom:8px;font-size:11.5px;color:#94a3b8;'>
+                Verified benchmark price guide for <b>{active_rate_cat}</b> in Islamabad & Rawalpindi:
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+        for rate_item in RATE_CARDS.get(active_rate_cat, []):
+            st.markdown(
+                f"""
+                <div style='display:flex;justify-content:space-between;align-items:center;padding:7px 10px;background:rgba(30,41,59,0.7);border-radius:10px;margin-bottom:6px;border-left:3px solid #3b82f6;'>
+                    <div>
+                        <b style='font-size:12px;color:#f8fafc;'>{rate_item['item']}</b><br>
+                        <span style='color:#94a3b8;font-size:10px;'>Avg. benchmark: Rs. {rate_item['avg']}</span>
+                    </div>
+                    <span style='font-size:12px;font-weight:700;color:#60a5fa;'>{rate_item['range']}</span>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+        st.markdown(
+            """
+            <div style='font-size:10.5px;color:#64748b;margin-top:4px;'>
+                💡 <i>Transparent standard pricing prevents overcharging and guides your counter-bids.</i>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
 
     # ==================== PROVIDER PROFILE VIEW ====================
     prof_p = st.session_state.get("viewing_provider_profile")
@@ -170,6 +204,27 @@ def render_providers():
             unsafe_allow_html=True,
         )
 
+        # Market Price Guide for Negotiation
+        p_svc = neg_p.get("service", "General")
+        rate_items = RATE_CARDS.get(p_svc, [])
+        if rate_items:
+            chips_html = "".join([
+                f"<div style='background:rgba(15,23,42,0.6);padding:4px 8px;border-radius:6px;font-size:10px;color:#94a3b8;margin:2px 0;'>• {item['item']}: <b style='color:#60a5fa;'>{item['range']}</b></div>"
+                for item in rate_items[:3]
+            ])
+            st.markdown(
+                f"""
+                <div style='background:rgba(59,130,246,0.12);border:1px solid rgba(59,130,246,0.25);border-radius:12px;padding:10px 12px;margin-bottom:12px;'>
+                    <div style='display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;'>
+                        <b style='color:#93c5fd;font-size:11.5px;'>🏷️ {p_svc} Market Price Benchmark:</b>
+                        <span style='color:#34d399;font-size:10px;font-weight:700;'>Auto-Accept &ge; 80%</span>
+                    </div>
+                    {chips_html}
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+
         proposed_bid = st.number_input(
             "Your Counter Offer (Rs.)",
             min_value=100,
@@ -208,6 +263,8 @@ def render_providers():
                     st.session_state.active_chat_provider = neg_p["name"]
                     st.session_state.negotiating_with = None
                     st.session_state.last_confirmed_booking = created_b
+                    st.session_state.skip_photos = False
+                    st.session_state.photos_uploaded = False
                     st.session_state.confirmation_balloons_shown = False
                     navigate_to("confirmation")
                 else:
@@ -296,6 +353,8 @@ def render_providers():
                 st.session_state.active_chat_provider = book_p["name"]
                 st.session_state.booking_in_progress = None
                 st.session_state.last_confirmed_booking = created_b
+                st.session_state.skip_photos = False
+                st.session_state.photos_uploaded = False
                 st.session_state.confirmation_balloons_shown = False
                 st.toast(f"Order confirmed with {book_p['name']}!")
                 navigate_to("confirmation")
