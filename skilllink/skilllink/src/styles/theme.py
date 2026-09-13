@@ -316,45 +316,87 @@ def apply_theme():
             border-radius: 24px !important;
         }
 
-        /* Tabs styling */
-        /* Modern iOS-Style Rounded Pill Tabs */
+        /* ---------- Sleek Separate Segmented Rounded Tabs ---------- */
+        [data-testid="stTabs"] [data-baseweb="tab-list"],
+        div[data-baseweb="tab-list"],
         .stTabs [data-baseweb="tab-list"] {
-            gap: 6px;
-            background-color: #111827 !important;
-            padding: 5px !important;
-            border-radius: 9999px !important;
-            border: 1px solid rgba(255, 255, 255, 0.08) !important;
-            display: inline-flex !important;
+            gap: 12px !important;
+            background-color: transparent !important;
+            padding: 4px 0 12px 0 !important;
+            border: none !important;
+            display: flex !important;
             width: 100% !important;
-            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+            justify-content: space-between !important;
         }
+
+        /* Hide default BaseWeb underlines and highlight lines */
+        [data-testid="stTabs"] [data-baseweb="tab-border"],
+        [data-testid="stTabs"] [data-baseweb="tab-highlight"],
+        [data-baseweb="tab-border"],
+        [data-baseweb="tab-highlight"],
         .stTabs [data-baseweb="tab-border"],
         .stTabs [data-baseweb="tab-highlight"] {
             display: none !important;
+            opacity: 0 !important;
+            height: 0 !important;
         }
+
+        /* Each Tab Button - Distinct, Rounded Pill Button with Gap */
+        [data-testid="stTabs"] button[data-baseweb="tab"],
+        div[data-baseweb="tab-list"] button,
+        button[role="tab"],
         .stTabs [data-baseweb="tab"] {
-            padding: 8px 18px !important;
-            border-radius: 9999px !important;
+            flex: 1 1 0 !important;
+            min-width: 0 !important;
+            padding: 10px 16px !important;
+            border-radius: 14px !important;
             color: #94a3b8 !important;
             font-weight: 700 !important;
-            font-size: 12.5px !important;
-            border: none !important;
-            background: transparent !important;
-            flex: 1 1 0 !important;
+            font-size: 13px !important;
+            background: #111827 !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
             text-align: center !important;
             justify-content: center !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25) !important;
             transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+            margin: 0 !important;
         }
+
+        /* Hover State on Inactive Tab */
+        [data-testid="stTabs"] button[data-baseweb="tab"]:hover,
+        div[data-baseweb="tab-list"] button:hover,
+        button[role="tab"]:hover,
         .stTabs [data-baseweb="tab"]:hover {
             color: #ffffff !important;
-            background: rgba(255, 255, 255, 0.06) !important;
-            border-radius: 9999px !important;
+            background: #1e293b !important;
+            border-color: rgba(255, 255, 255, 0.2) !important;
+            transform: translateY(-1px) !important;
         }
+
+        /* Active Tab - Glowing Blue Rounded Button */
+        [data-testid="stTabs"] button[data-baseweb="tab"][aria-selected="true"],
+        div[data-baseweb="tab-list"] button[aria-selected="true"],
+        button[role="tab"][aria-selected="true"],
         .stTabs [aria-selected="true"] {
             background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
             color: #ffffff !important;
-            border-radius: 9999px !important;
-            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.45) !important;
+            font-weight: 800 !important;
+            border: 1px solid rgba(59, 130, 246, 0.6) !important;
+            border-radius: 14px !important;
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.5) !important;
+            transform: translateY(-1px) !important;
+        }
+
+        /* Tab content text container inside button */
+        [data-testid="stTabs"] button[data-baseweb="tab"] div,
+        [data-testid="stTabs"] button[data-baseweb="tab"] p,
+        button[role="tab"] p,
+        button[role="tab"] div {
+            color: inherit !important;
+            font-size: inherit !important;
+            font-weight: inherit !important;
+            justify-content: center !important;
+            text-align: center !important;
         }
 
         /* Metrics */
