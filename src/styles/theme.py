@@ -71,7 +71,7 @@ def apply_theme():
         [data-testid="stMainBlockContainer"] {
             max-width: 480px !important;
             min-height: 840px !important;
-            padding: 1.2rem 1.2rem 1.4rem 1.2rem !important;
+            padding: 1.2rem 1.2rem 2.2rem 1.2rem !important;
             margin: 1.5rem auto !important;
             background: #0b0f19 !important;
             border-radius: 42px !important;
@@ -81,19 +81,8 @@ def apply_theme():
                 0 25px 50px -12px rgba(0, 0, 0, 0.9),
                 0 0 50px rgba(37, 99, 235, 0.18) !important;
             position: relative;
-            display: flex !important;
-            flex-direction: column !important;
-            justify-content: space-between !important;
             overflow-x: hidden;
             overflow-y: visible;
-        }
-
-        [data-testid="stMainBlockContainer"] > [data-testid="stVerticalBlock"],
-        [data-testid="stMainBlockContainer"] > div {
-            display: flex !important;
-            flex-direction: column !important;
-            flex: 1 1 auto !important;
-            min-height: 100% !important;
         }
 
         /* Seamless Edge-to-Edge on Mobile Devices */

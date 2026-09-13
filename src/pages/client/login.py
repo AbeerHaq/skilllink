@@ -172,8 +172,7 @@ def render_login():
                         st.session_state.provider_name = user_data["name"]
                         st.session_state.provider_phone = user_data["phone"]
                     st.session_state.wallet_balance = user_data.get("wallet_balance", 1000.0)
-                    st.balloons()
                     st.toast(msg)
-                    navigate_to("home" if selected_role == "Client" else "dashboard")
+                    navigate_to("home")
                 else:
                     st.error(msg)
