@@ -3,6 +3,7 @@ import random
 from database import get_all_providers, create_booking, create_negotiation, calculate_commission
 from src.utils.navigation import navigate_to, render_bottom_nav
 from src.data.mock_data import SERVICES
+from src.pages.client.booking_type_selector import render_booking_type_selector
 
 
 def render_providers():
@@ -248,6 +249,8 @@ def render_providers():
             ["JazzCash (+92 300 1234567)", "EasyPaisa", f"SkillLink Wallet (Rs. {int(st.session_state.wallet_balance):,})", "Cash on Delivery"],
         )
 
+        booking_data = render_booking_type_selector()
+
         st.markdown(
             f"""
             <div style='background:#1e293b;padding:14px;border-radius:16px;margin:12px 0;'>
@@ -272,6 +275,10 @@ def render_providers():
         col_cb1, col_cb2 = st.columns(2)
         with col_cb1:
             if st.button("Confirm Order 🚀", type="primary", use_container_width=True):
+                st.session_state.pending_booking_type = booking_data.get("type", "instant")
+                st.session_state.pending_scheduled_datetime = booking_data.get("scheduled_datetime")
+                st.session_state.pending_time_window = booking_data.get("time_window")
+
                 created_b = create_booking(
                     client_name=st.session_state.user_name,
                     client_phone=st.session_state.user_phone,
@@ -282,6 +289,9 @@ def render_providers():
                     dropoff=dropoff_addr,
                     fare=final_fare,
                     payment_method=payment_method.split()[0],
+                    booking_type=st.session_state.get("pending_booking_type", "instant"),
+                    scheduled_datetime=st.session_state.get("pending_scheduled_datetime"),
+                    preferred_time_window=st.session_state.get("pending_time_window"),
                 )
                 st.session_state.active_chat_provider = book_p["name"]
                 st.session_state.booking_in_progress = None

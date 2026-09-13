@@ -1,5 +1,6 @@
 import streamlit as st
 from src.utils.navigation import navigate_to, render_bottom_nav
+from src.pages.client.issue_photos import render_issue_photos
 
 
 def render_confirmation():
@@ -9,6 +10,11 @@ def render_confirmation():
         st.info("No recent booking found.")
         if st.button("Go to Home ➔", type="primary", use_container_width=True):
             navigate_to("home")
+        render_bottom_nav()
+        return
+
+    if not st.session_state.get("skip_photos", False) and not st.session_state.get("photos_uploaded", False):
+        render_issue_photos(booking)
         render_bottom_nav()
         return
 

@@ -35,7 +35,7 @@ def render_bookings():
     bookings_list = get_client_bookings(st.session_state.get("user_phone", "+92 300 1234567"))
 
     if is_active_tab:
-        active_bookings = [b for b in bookings_list if b["status"] == "In Progress"]
+        active_bookings = [b for b in bookings_list if b["status"] in ("In Progress", "Scheduled")]
 
         if not active_bookings:
             st.markdown(
@@ -52,15 +52,50 @@ def render_bookings():
                 navigate_to("home")
         else:
             job = active_bookings[0]
+            booking_type = job.get("booking_type", "instant")
             step_idx = int(job.get("step", 0))
+            step_idx = max(0, min(step_idx, 3))
             step_name = STEPS[step_idx]
+
+            status_header = (
+                "<span class='badge-active'><span class='pulse-dot'></span> 📅 Scheduled Booking</span>"
+                if booking_type == "scheduled"
+                else f"<span class='badge-active'><span class='pulse-dot'></span> Status: {step_name}</span>"
+            )
+            scheduled_info = (
+                f"<div style='color:#fbbf24;font-size:12px;margin-top:4px;'>📅 Scheduled: {job.get('scheduled_datetime', '')}</div>"
+                if booking_type == "scheduled"
+                else ""
+            )
+
+            progress_html = (
+                f"""
+                <div style='margin-top:14px;background:#1f2937;border-radius:10px;height:8px;overflow:hidden;'>
+                    <div style='background:linear-gradient(90deg, #2563eb, #10b981);height:100%;width:{(step_idx + 1) * 25}%;transition:all 0.3s;'></div>
+                </div>
+                <div style='display:flex;justify-content:space-between;font-size:10px;color:#94a3b8;margin-top:4px;'>
+                    <span style='color:{"#60a5fa" if step_idx >= 0 else "#6b7280"};'>Assigned</span>
+                    <span style='color:{"#60a5fa" if step_idx >= 1 else "#6b7280"};'>En Route</span>
+                    <span style='color:{"#60a5fa" if step_idx >= 2 else "#6b7280"};'>Arrived</span>
+                    <span style='color:{"#34d399" if step_idx >= 3 else "#6b7280"};'>Done</span>
+                </div>
+                """
+                if booking_type != "scheduled"
+                else
+                """
+                <div style='margin-top:12px;padding:10px;background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.25);border-radius:10px;text-align:center;color:#fbbf24;font-size:12px;'>
+                    ⏰ Your specialist will be dispatched at the scheduled time.
+                </div>
+                """
+            )
 
             st.markdown(
                 f"""<div class='highlight-card'>
 <div style='display:flex;justify-content:space-between;align-items:center;'>
 <div>
-<span class='badge-active'><span class='pulse-dot'></span> Status: {step_name}</span>
+{status_header}
 <h3 style='margin:6px 0 2px 0;font-size:18px;'>{job['service_name']}</h3>
+{scheduled_info}
 <span style='color:#9ca3af;font-size:12px;'>Order ID: {job['booking_code']}</span>
 </div>
 <div style='text-align:right;'>
@@ -70,15 +105,7 @@ def render_bookings():
 </span>
 </div>
 </div>
-<div style='margin-top:14px;background:#1f2937;border-radius:10px;height:8px;overflow:hidden;'>
-<div style='background:linear-gradient(90deg, #2563eb, #10b981);height:100%;width:{(step_idx + 1) * 25}%;transition:all 0.3s;'></div>
-</div>
-<div style='display:flex;justify-content:space-between;font-size:10px;color:#94a3b8;margin-top:4px;'>
-<span style='color:{"#60a5fa" if step_idx >= 0 else "#6b7280"};'>Assigned</span>
-<span style='color:{"#60a5fa" if step_idx >= 1 else "#6b7280"};'>En Route</span>
-<span style='color:{"#60a5fa" if step_idx >= 2 else "#6b7280"};'>Arrived</span>
-<span style='color:{"#34d399" if step_idx >= 3 else "#6b7280"};'>Done</span>
-</div>
+{progress_html}
 </div>""",
                 unsafe_allow_html=True,
             )
