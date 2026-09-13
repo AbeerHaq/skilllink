@@ -36,11 +36,12 @@ def render_home():
     if st.session_state.get("show_notifications", False):
         st.markdown(
             """
-            <div class='modal-card'>
-                <div style='display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;'>
+            <div class='modal-card' style='margin-bottom:12px;'>
+                <div style='display:flex;justify-content:space-between;align-items:center;'>
                     <b style='font-size:14px;color:#60a5fa;'>🔔 Live Notifications</b>
                     <span style='font-size:11px;color:#94a3b8;'>Database Connected</span>
                 </div>
+            </div>
             """,
             unsafe_allow_html=True,
         )
@@ -67,7 +68,6 @@ def render_home():
             if st.button("Close", key="c_notif", type="secondary"):
                 st.session_state.show_notifications = False
                 st.rerun()
-        st.markdown("</div>", unsafe_allow_html=True)
 
     # ---- Active Order Banner (From SQLite) ----
     db_bookings = get_client_bookings(user_phone)
