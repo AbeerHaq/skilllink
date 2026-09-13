@@ -19,8 +19,7 @@ def navigate_to(page_name: str):
 
 def render_bottom_nav():
     """Renders the sleek, mobile-friendly bottom navigation bar with crisp text."""
-    st.markdown("<div style='height:20px;'></div>", unsafe_allow_html=True)
-    st.markdown("<div id='nav-marker'></div>", unsafe_allow_html=True)
+    st.markdown("<div id='bottom-nav-anchor'></div><div id='nav-marker'></div>", unsafe_allow_html=True)
 
     current = st.session_state.current_page
     cols = st.columns(4)

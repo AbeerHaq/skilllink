@@ -69,9 +69,9 @@ def apply_theme():
 
         /* ---------- Sleek Mobile Device Mockup Frame ---------- */
         [data-testid="stMainBlockContainer"] {
-            max-width: 430px !important;
+            max-width: 480px !important;
             min-height: 840px !important;
-            padding: 1.2rem 1.1rem 2.2rem 1.1rem !important;
+            padding: 1.2rem 1.2rem 1.4rem 1.2rem !important;
             margin: 1.5rem auto !important;
             background: #0b0f19 !important;
             border-radius: 42px !important;
@@ -81,8 +81,19 @@ def apply_theme():
                 0 25px 50px -12px rgba(0, 0, 0, 0.9),
                 0 0 50px rgba(37, 99, 235, 0.18) !important;
             position: relative;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: space-between !important;
             overflow-x: hidden;
             overflow-y: visible;
+        }
+
+        [data-testid="stMainBlockContainer"] > [data-testid="stVerticalBlock"],
+        [data-testid="stMainBlockContainer"] > div {
+            display: flex !important;
+            flex-direction: column !important;
+            flex: 1 1 auto !important;
+            min-height: 100% !important;
         }
 
         /* Seamless Edge-to-Edge on Mobile Devices */
@@ -94,7 +105,7 @@ def apply_theme():
                 border-radius: 0px !important;
                 box-shadow: none !important;
                 border: none !important;
-                padding: 1rem 0.9rem 1.8rem 0.9rem !important;
+                padding: 1rem 0.9rem 4.5rem 0.9rem !important;
             }
         }
 
@@ -275,42 +286,85 @@ def apply_theme():
             color: #fca5a5 !important;
         }
 
-        /* Bottom Floating Dock Navigation */
-        #nav-marker + div {
-            margin-top: 18px !important;
-            padding-top: 6px !important;
-            border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+        /* Bottom Navigation Bar Anchor & Auto-push to bottom */
+        div[data-testid="stElementContainer"]:has(#bottom-nav-anchor),
+        div.element-container:has(#bottom-nav-anchor),
+        div:has(> div > div > #bottom-nav-anchor),
+        div:has(#nav-marker) {
+            margin-top: auto !important;
+            height: 0px !important;
+            min-height: 0px !important;
+            padding: 0 !important;
+            margin-bottom: 0 !important;
         }
-        #nav-marker + div [data-testid="column"] {
-            padding: 0 1px !important;
+
+        /* Bottom Floating Dock Navigation Row */
+        div[data-testid="stElementContainer"]:has(#bottom-nav-anchor) + div,
+        div.element-container:has(#bottom-nav-anchor) + div,
+        div:has(#nav-marker) + div {
+            position: sticky !important;
+            bottom: 0px !important;
+            z-index: 9999 !important;
+            background: rgba(11, 15, 25, 0.95) !important;
+            backdrop-filter: blur(16px) !important;
+            -webkit-backdrop-filter: blur(16px) !important;
+            padding: 10px 4px 6px 4px !important;
+            margin-top: 18px !important;
+            border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+            border-radius: 18px 18px 0 0 !important;
+            box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.5) !important;
+        }
+        div[data-testid="stElementContainer"]:has(#bottom-nav-anchor) + div [data-testid="column"],
+        div.element-container:has(#bottom-nav-anchor) + div [data-testid="column"],
+        div:has(#nav-marker) + div [data-testid="column"] {
+            padding: 0 2px !important;
             min-width: 0 !important;
         }
-        #nav-marker + div .stButton > button {
-            background: transparent !important;
-            border: 1px solid transparent !important;
+        div[data-testid="stElementContainer"]:has(#bottom-nav-anchor) + div .stButton > button,
+        div.element-container:has(#bottom-nav-anchor) + div .stButton > button,
+        div:has(#nav-marker) + div .stButton > button {
+            background: rgba(15, 23, 42, 0.7) !important;
+            border: 1px solid rgba(255, 255, 255, 0.08) !important;
             box-shadow: none !important;
             color: #94a3b8 !important;
-            font-size: 11px !important;
+            font-size: 11.5px !important;
             font-weight: 700 !important;
-            padding: 6px 1px !important;
+            padding: 9px 2px !important;
             margin: 0 !important;
             border-radius: 12px !important;
             white-space: nowrap !important;
             overflow: visible !important;
             text-overflow: clip !important;
             letter-spacing: -0.2px !important;
-            line-height: 1.25 !important;
-            min-height: 48px !important;
+            line-height: 1.2 !important;
+            min-height: 42px !important;
         }
-        #nav-marker + div .stButton > button:hover {
+        div[data-testid="stElementContainer"]:has(#bottom-nav-anchor) + div .stButton > button p,
+        div[data-testid="stElementContainer"]:has(#bottom-nav-anchor) + div .stButton > button span,
+        div.element-container:has(#bottom-nav-anchor) + div .stButton > button p,
+        div:has(#nav-marker) + div .stButton > button p {
+            font-size: 11.5px !important;
+            white-space: nowrap !important;
+            overflow: visible !important;
+            text-overflow: clip !important;
+            letter-spacing: -0.2px !important;
+        }
+        div[data-testid="stElementContainer"]:has(#bottom-nav-anchor) + div .stButton > button:hover,
+        div:has(#nav-marker) + div .stButton > button:hover {
             color: #ffffff !important;
-            background: rgba(255, 255, 255, 0.06) !important;
+            background: rgba(255, 255, 255, 0.1) !important;
         }
-        #nav-marker + div .stButton > button[kind="primary"] {
-            color: #60a5fa !important;
+        div[data-testid="stElementContainer"]:has(#bottom-nav-anchor) + div .stButton > button[kind="primary"],
+        div:has(#nav-marker) + div .stButton > button[kind="primary"] {
+            color: #ffffff !important;
             font-weight: 800 !important;
-            background: rgba(37, 99, 235, 0.16) !important;
-            border-color: rgba(59, 130, 246, 0.3) !important;
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
+            border: 1px solid rgba(59, 130, 246, 0.5) !important;
+            box-shadow: 0 4px 16px rgba(37, 99, 235, 0.45) !important;
+        }
+        div[data-testid="stElementContainer"]:has(#bottom-nav-anchor) + div .stButton > button[kind="primary"] p,
+        div:has(#nav-marker) + div .stButton > button[kind="primary"] span {
+            color: #ffffff !important;
         }
 
         /* Inputs & Textareas */
