@@ -17,11 +17,26 @@ def render_login():
         unsafe_allow_html=True,
     )
 
-    tab_signin, tab_signup = st.tabs(["🔑 Sign In", "📝 Create Account"])
+    if "auth_tab" not in st.session_state:
+        st.session_state.auth_tab = "signin"
 
-    # ==================== TAB 1: SIGN IN ====================
-    with tab_signin:
-        st.markdown("<div style='height:6px;'></div>", unsafe_allow_html=True)
+    is_signin = (st.session_state.auth_tab == "signin")
+    col_t1, col_t2 = st.columns(2)
+    with col_t1:
+        btn_t = "primary" if is_signin else "secondary"
+        if st.button("🔑 Sign In", key="tab_btn_signin", type=btn_t, use_container_width=True):
+            st.session_state.auth_tab = "signin"
+            st.rerun()
+    with col_t2:
+        btn_t = "secondary" if is_signin else "primary"
+        if st.button("📝 Create Account", key="tab_btn_signup", type=btn_t, use_container_width=True):
+            st.session_state.auth_tab = "signup"
+            st.rerun()
+
+    st.markdown("<div style='height:10px;'></div>", unsafe_allow_html=True)
+
+    # ==================== VIEW 1: SIGN IN ====================
+    if is_signin:
         st.caption("Sign in with your registered mobile phone and security PIN.")
 
         phone_in = st.text_input(
@@ -70,9 +85,8 @@ def render_login():
                     st.toast("Signed in as Abeer Ahmed!")
                     navigate_to("home")
 
-    # ==================== TAB 2: CREATE ACCOUNT (SIGN UP) ====================
-    with tab_signup:
-        st.markdown("<div style='height:6px;'></div>", unsafe_allow_html=True)
+    # ==================== VIEW 2: CREATE ACCOUNT (SIGN UP) ====================
+    else:
         st.markdown(
             """
             <div style='background:rgba(37,99,235,0.14);border:1px solid rgba(59,130,246,0.3);padding:10px 12px;border-radius:14px;margin-bottom:12px;'>

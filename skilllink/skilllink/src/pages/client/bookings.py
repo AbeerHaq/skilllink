@@ -12,9 +12,25 @@ def render_bookings():
     with col_title:
         st.markdown("#### My Bookings & Orders")
 
-    tab_active, tab_history = st.tabs(["🚀 Active Order", "📜 Past History"])
+    if "bookings_tab" not in st.session_state:
+        st.session_state.bookings_tab = "active"
 
-    with tab_active:
+    is_active_tab = (st.session_state.bookings_tab == "active")
+    col_b1, col_b2 = st.columns(2)
+    with col_b1:
+        btn_t = "primary" if is_active_tab else "secondary"
+        if st.button("🚀 Active Order", key="tab_btn_active", type=btn_t, use_container_width=True):
+            st.session_state.bookings_tab = "active"
+            st.rerun()
+    with col_b2:
+        btn_t = "secondary" if is_active_tab else "primary"
+        if st.button("📜 Past History", key="tab_btn_history", type=btn_t, use_container_width=True):
+            st.session_state.bookings_tab = "history"
+            st.rerun()
+
+    st.markdown("<div style='height:10px;'></div>", unsafe_allow_html=True)
+
+    if is_active_tab:
         active_bookings = [b for b in st.session_state.bookings if b["status"] == "In Progress"]
 
         if not active_bookings:
@@ -111,8 +127,7 @@ def render_bookings():
                         job["status"] = "Completed"
                         st.toast("🎉 Job completed successfully!")
                     st.rerun()
-
-    with tab_history:
+    else:
         past_bookings = [b for b in st.session_state.bookings if b["status"] != "In Progress"]
         if not past_bookings:
             st.caption("No past bookings recorded.")
