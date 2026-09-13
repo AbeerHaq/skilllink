@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>SkillLink • On-Demand Mobility & Services</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- Device Container (iPhone 16 Pro Mockup) -->
+  <div class="device-wrapper" id="deviceApp">
+    
+    <!-- Toast Message Container -->
+    <div class="toast-container" id="toastBox"></div>
+
+    <!-- Top Status Bar -->
+    <div class="status-bar">
+      <span>09:41</span>
+      <div class="dynamic-island"></div>
+      <div class="flex items-center gap-1.5 text-xs">
+        <span>5G</span>
+        <i data-lucide="wifi" class="w-3.5 h-3.5"></i>
+        <i data-lucide="battery" class="w-4 h-4"></i>
+      </div>
+    </div>
+
+    <!-- App Header & Segmented Mode Switcher -->
+    <header class="app-header" id="mainHeader">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-md shadow-blue-500/30 font-bold text-sm">
+          🔗
+        </div>
+        <span class="font-extrabold text-base tracking-tight text-white">SkillLink</span>
+      </div>
+
+      <!-- Segmented Mode Control -->
+      <div class="segmented-toggle">
+        <button class="segmented-btn active" id="btnModeClient" onclick="switchMode('Client')">Client</button>
+        <button class="segmented-btn" id="btnModePartner" onclick="switchMode('Partner')">Partner</button>
+      </div>
+    </header>
+
+    <!-- Main Scrollable App Content -->
+    <main class="app-content">
+
+      <!-- ==================== 1. AUTH SCREEN ==================== -->
+      <section class="view-screen active" id="view-auth">
+        <div class="text-center my-6">
+          <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-blue-600 to-blue-400 mx-auto flex items-center justify-center text-3xl shadow-lg shadow-blue-500/40 mb-3">
+            🔗
+          </div>
+          <h2 class="text-2xl font-extrabold tracking-tight text-white">Welcome to SkillLink</h2>
+          <p class="text-xs text-slate-400 mt-1">On-Demand Services & Instant Mobility</p>
+        </div>
+
+        <!-- Phone Step -->
+        <div id="authStepPhone" class="card">
+          <h3 class="font-bold text-sm text-slate-200 mb-1">Sign In / Register</h3>
+          <p class="text-xs text-slate-400 mb-3">Enter your mobile number to receive a one-time code.</p>
+          
+          <input type="tel" id="inputAuthPhone" class="input-field mb-3" value="+92 300 1234567" placeholder="+92 300 0000000" />
+
+          <div class="grid grid-cols-2 gap-2">
+            <button class="btn-primary" onclick="requestOTP()">Send OTP 📲</button>
+            <button class="btn-secondary" onclick="instantDemoLogin()">⚡ Quick Demo</button>
+          </div>
+        </div>
+
+        <!-- OTP Step -->
+        <div id="authStepOTP" class="card hidden">
+          <h3 class="font-bold text-sm text-slate-200 mb-1">Enter Verification Code</h3>
+          <p class="text-xs text-slate-400 mb-2">We sent a 4-digit code to <b id="displayOtpPhone">+92 300 1234567</b></p>
+          
+          <div class="bg-blue-950/40 border border-blue-500/30 rounded-xl p-2.5 text-xs text-blue-300 mb-3">
+            💡 <b>Hackathon Demo PIN:</b> <code class="font-bold text-white bg-blue-900/60 px-1.5 py-0.5 rounded">1234</code>
+          </div>
+
+          <input type="text" id="inputAuthOTP" maxlength="4" class="input-field text-center tracking-widest text-lg font-bold mb-3" placeholder="• • • •" />
+
+          <button class="btn-primary mb-2" onclick="verifyOTP()">Verify & Continue ➔</button>
+          <div class="flex justify-between text-xs text-slate-400">
+            <button class="hover:text-blue-400" onclick="showToast('New code sent: 1234')">Resend Code</button>
+            <button class="hover:text-blue-400" onclick="backToPhoneStep()">Change Phone</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== 2. CLIENT: HOME SCREEN ==================== -->
+      <section class="view-screen" id="view-home">
+        <!-- Top Bar Row -->
+        <div class="flex justify-between items-center mb-3">
+          <div>
+            <span class="text-[10px] font-bold text-slate-400 tracking-wider">CURRENT LOCATION</span>
+            <div class="text-sm font-bold text-white flex items-center gap-1">
+              📍 <span id="lblUserLoc">F-8 Markaz, Islamabad</span>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <button class="w-9 h-9 rounded-xl bg-slate-900 border border-slate-700/60 flex items-center justify-center text-slate-300 relative hover:border-blue-500" onclick="toggleNotifs()">
+              <i data-lucide="bell" class="w-4 h-4"></i>
+              <span id="badgeNotifCount" class="absolute -top-1 -right-1 w-4 h-4 bg-blue-600 rounded-full text-[9px] font-bold flex items-center justify-center text-white">2</span>
+            </button>
+            <button class="w-9 h-9 rounded-xl bg-slate-900 border border-slate-700/60 flex items-center justify-center text-slate-300 hover:border-blue-500" onclick="navigateTo('profile')">
+              <i data-lucide="user" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Notification Drawer -->
+        <div id="drawerNotifs" class="card-highlight hidden mb-3">
+          <div class="flex justify-between items-center mb-2">
+            <b class="text-xs text-blue-400 flex items-center gap-1.5"><i data-lucide="bell-ring" class="w-3.5 h-3.5"></i> Live Alerts</b>
+            <button class="text-[11px] text-slate-400 hover:text-white" onclick="toggleNotifs()">Close</button>
+          </div>
+          <div id="notifList" class="space-y-2 text-xs">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+        <!-- Active Trip Banner -->
+        <div id="bannerActiveTrip" class="card-highlight hidden">
+          <div class="flex justify-between items-start">
+            <div>
+              <span class="badge-active"><span class="pulse-dot"></span> Active Order</span>
+              <h4 id="activeTripTitle" class="font-bold text-sm text-white mt-1">Ride Service</h4>
+              <p id="activeTripSubtitle" class="text-xs text-slate-400">Driver: <b>Ahmed Khan</b></p>
+            </div>
+            <div class="text-right">
+              <span class="text-[10px] text-slate-400">DRIVER PIN</span>
+              <div id="activeTripPIN" class="text-xs font-extrabold bg-emerald-600 text-white px-2 py-0.5 rounded-lg mt-0.5">4821</div>
+            </div>
+          </div>
+          <button class="btn-primary mt-3 text-xs py-2" onclick="navigateTo('bookings')">Track Live Order ➔</button>
+        </div>
+
+        <!-- Live Proximity Radar Component -->
+        <div class="relative h-48 rounded-3xl bg-slate-950 border border-blue-500/30 overflow-hidden shadow-inner mb-4">
+          <!-- Radial Grid -->
+          <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(37,99,235,0.15)_0%,_transparent_75%)]"></div>
+          <div class="absolute inset-0 opacity-20 bg-[linear-gradient(rgba(255,255,255,0.05)_1px,_transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,_transparent_1px)] bg-[size:20px_20px]"></div>
+          
+          <!-- Concentric Circles -->
+          <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-36 h-36 rounded-full border border-dashed border-blue-500/20"></div>
+          <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 rounded-full border border-blue-500/30"></div>
+
+          <!-- Top Pills -->
+          <div class="absolute top-2.5 left-3 bg-slate-900/90 backdrop-blur border border-white/10 rounded-full px-2.5 py-1 text-[10px] font-bold text-blue-300 flex items-center gap-1.5">
+            <span class="pulse-dot"></span> Live GPS (F-8/2)
+          </div>
+          <div class="absolute top-2.5 right-3 bg-blue-600/20 border border-blue-500/40 rounded-full px-2.5 py-1 text-[10px] font-extrabold text-blue-400">
+            ⚡ 5 Pros nearby
+          </div>
+
+          <!-- Driver Marker 1 (Ride) -->
+          <div class="absolute top-12 left-8 bg-slate-900/95 border border-blue-500 rounded-xl px-2 py-1 text-[10px] font-bold text-white shadow-lg flex items-center gap-1 cursor-pointer" onclick="selectService('Ride')">
+            🚗 Ahmed <span class="text-emerald-400">3m</span>
+          </div>
+
+          <!-- Driver Marker 2 (Plumber) -->
+          <div class="absolute bottom-12 right-6 bg-slate-900/95 border border-emerald-500 rounded-xl px-2 py-1 text-[10px] font-bold text-white shadow-lg flex items-center gap-1 cursor-pointer" onclick="selectService('Plumber')">
+            🔧 Usman <span class="text-emerald-400">7m</span>
+          </div>
+
+          <!-- Driver Marker 3 (Delivery) -->
+          <div class="absolute bottom-4 left-20 bg-slate-900/95 border border-amber-500 rounded-xl px-2 py-1 text-[10px] font-bold text-white shadow-lg flex items-center gap-1 cursor-pointer" onclick="selectService('Delivery')">
+            📦 Hamza <span class="text-emerald-400">5m</span>
+          </div>
+
+          <!-- Center User Pin -->
+          <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center pointer-events-none">
+            <div class="w-4 h-4 rounded-full bg-blue-600 border-2 border-white shadow-[0_0_15px_#3b82f6]"></div>
+            <span class="mt-1 text-[9px] font-extrabold text-white bg-slate-900/90 px-1.5 py-0.5 rounded-full border border-white/10">You</span>
+          </div>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="relative mb-4">
+          <i data-lucide="search" class="w-4 h-4 absolute left-3.5 top-3.5 text-slate-400"></i>
+          <input type="text" id="inputHomeSearch" class="input-field pl-10" placeholder="Search rides, plumbers, electricians..." oninput="handleSearch(this.value)" />
+        </div>
+
+        <!-- Service Categories Grid -->
+        <div class="flex justify-between items-center mb-2.5">
+          <h3 class="font-extrabold text-sm text-slate-200">On-Demand Services</h3>
+          <span class="text-xs text-blue-400 font-bold cursor-pointer" onclick="selectService('All')">View All</span>
+        </div>
+
+        <div class="grid grid-cols-3 gap-2.5 mb-4">
+          <div class="card !p-3 text-center cursor-pointer hover:border-blue-500/50" onclick="selectService('Ride')">
+            <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-lg mx-auto mb-1.5 shadow-md shadow-blue-500/30">🚗</div>
+            <b class="text-xs text-white">Ride</b>
+            <p class="text-[10px] text-slate-400 mt-0.5">Quick trips</p>
+          </div>
+          <div class="card !p-3 text-center cursor-pointer hover:border-amber-500/50" onclick="selectService('Delivery')">
+            <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-600 to-orange-500 flex items-center justify-center text-lg mx-auto mb-1.5 shadow-md shadow-amber-500/30">📦</div>
+            <b class="text-xs text-white">Delivery</b>
+            <p class="text-[10px] text-slate-400 mt-0.5">Parcels</p>
+          </div>
+          <div class="card !p-3 text-center cursor-pointer hover:border-emerald-500/50" onclick="selectService('Plumber')">
+            <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-lg mx-auto mb-1.5 shadow-md shadow-emerald-500/30">🔧</div>
+            <b class="text-xs text-white">Plumber</b>
+            <p class="text-[10px] text-slate-400 mt-0.5">Repairs</p>
+          </div>
+          <div class="card !p-3 text-center cursor-pointer hover:border-purple-500/50" onclick="selectService('Electrician')">
+            <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-purple-600 to-indigo-500 flex items-center justify-center text-lg mx-auto mb-1.5 shadow-md shadow-purple-500/30">⚡</div>
+            <b class="text-xs text-white">Electrician</b>
+            <p class="text-[10px] text-slate-400 mt-0.5">Wiring</p>
+          </div>
+          <div class="card !p-3 text-center cursor-pointer hover:border-cyan-500/50" onclick="selectService('AC Repair')">
+            <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-cyan-600 to-blue-500 flex items-center justify-center text-lg mx-auto mb-1.5 shadow-md shadow-cyan-500/30">❄️</div>
+            <b class="text-xs text-white">AC Repair</b>
+            <p class="text-[10px] text-slate-400 mt-0.5">Cooling</p>
+          </div>
+          <div class="card !p-3 text-center cursor-pointer hover:border-rose-500/50" onclick="selectService('Cleaning')">
+            <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-rose-600 to-pink-500 flex items-center justify-center text-lg mx-auto mb-1.5 shadow-md shadow-rose-500/30">🧹</div>
+            <b class="text-xs text-white">Cleaning</b>
+            <p class="text-[10px] text-slate-400 mt-0.5">Deep clean</p>
+          </div>
+        </div>
+
+        <!-- Special Promotions -->
+        <h3 class="font-extrabold text-sm text-slate-200 mb-2">🎁 Special Promotions</h3>
+        <div class="space-y-2">
+          <div class="card flex justify-between items-center !py-3">
+            <div>
+              <b class="text-xs text-white">Free Delivery</b><br>
+              <span class="text-[11px] text-slate-400">100% off delivery on first 3 orders</span>
+            </div>
+            <button class="badge-tag cursor-pointer hover:scale-105" onclick="applyPromo('FREEDEL', 350)">FREEDEL</button>
+          </div>
+          <div class="card flex justify-between items-center !py-3">
+            <div>
+              <b class="text-xs text-white">20% Off Home Services</b><br>
+              <span class="text-[11px] text-slate-400">Valid on Plumber & Electrician</span>
+            </div>
+            <button class="badge-tag cursor-pointer hover:scale-105" onclick="applyPromo('SKILL20', 200)">SKILL20</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== 3. CLIENT: PROVIDERS SCREEN ==================== -->
+      <section class="view-screen" id="view-providers">
+        <div class="flex items-center gap-2 mb-3">
+          <button class="w-8 h-8 rounded-xl bg-slate-900 border border-slate-700/60 flex items-center justify-center text-slate-300" onclick="navigateTo('home')">
+            <i data-lucide="chevron-left" class="w-4 h-4"></i>
+          </button>
+          <div>
+            <h3 class="font-extrabold text-sm text-white" id="providersHeaderTitle">Available Providers</h3>
+            <span class="text-[11px] text-slate-400">Islamabad & Rawalpindi Region</span>
+          </div>
+        </div>
+
+        <!-- Filter Chips -->
+        <div class="flex gap-2 overflow-x-auto pb-2 mb-2 scrollbar-none" id="providerFilterChips">
+          <!-- Rendered by JS -->
+        </div>
+
+        <!-- Providers List Container -->
+        <div id="providersListContainer" class="space-y-3">
+          <!-- Rendered by JS -->
+        </div>
+      </section>
+
+      <!-- ==================== 4. CLIENT: BOOKINGS & TRACKING ==================== -->
+      <section class="view-screen" id="view-bookings">
+        <div class="flex items-center gap-2 mb-3">
+          <button class="w-8 h-8 rounded-xl bg-slate-900 border border-slate-700/60 flex items-center justify-center text-slate-300" onclick="navigateTo('home')">
+            <i data-lucide="chevron-left" class="w-4 h-4"></i>
+          </button>
+          <h3 class="font-extrabold text-sm text-white">My Bookings & Orders</h3>
+        </div>
+
+        <!-- Booking Tabs -->
+        <div class="flex bg-slate-900 p-1 rounded-2xl border border-white/10 mb-3">
+          <button class="flex-1 py-1.5 text-xs font-bold text-blue-400 bg-slate-800 rounded-xl shadow" id="tabBookActive" onclick="switchBookingTab('active')">Active Order</button>
+          <button class="flex-1 py-1.5 text-xs font-bold text-slate-400" id="tabBookHistory" onclick="switchBookingTab('history')">Past History</button>
+        </div>
+
+        <!-- Active Order Panel -->
+        <div id="panelBookActive">
+          <!-- Rendered by JS -->
+        </div>
+
+        <!-- History Panel -->
+        <div id="panelBookHistory" class="hidden space-y-2.5">
+          <!-- Rendered by JS -->
+        </div>
+      </section>
+
+      <!-- ==================== 5. CLIENT: CHAT SCREEN ==================== -->
+      <section class="view-screen" id="view-chat">
+        <!-- Chat Header -->
+        <div class="flex justify-between items-center mb-3 pb-2 border-b border-white/10">
+          <div class="flex items-center gap-2">
+            <button class="w-8 h-8 rounded-xl bg-slate-900 border border-slate-700/60 flex items-center justify-center text-slate-300" onclick="navigateTo('home')">
+              <i data-lucide="chevron-left" class="w-4 h-4"></i>
+            </button>
+            <div>
+              <b class="text-sm text-white" id="chatProviderName">Ahmed Khan</b><br>
+              <span class="text-[11px] text-emerald-400 font-bold flex items-center gap-1">
+                <span class="pulse-dot"></span> Online & Active
+              </span>
+            </div>
+          </div>
+          <button class="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-lg shadow-blue-500/30" onclick="showToast('Calling Ahmed Khan (+92 301 5551234)...')">
+            <i data-lucide="phone" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+        <!-- Messages Thread -->
+        <div id="chatMessagesBox" class="space-y-3 mb-3 min-h-[300px]">
+          <!-- Rendered by JS -->
+        </div>
+
+        <!-- Quick Suggestions -->
+        <div class="flex gap-1.5 overflow-x-auto pb-2 mb-2 scrollbar-none">
+          <button class="bg-slate-900 border border-white/10 text-[11px] text-slate-300 px-3 py-1.5 rounded-full whitespace-nowrap hover:border-blue-500" onclick="sendChatMsg('I am waiting at the pickup gate 🚪')">Waiting at gate 🚪</button>
+          <button class="bg-slate-900 border border-white/10 text-[11px] text-slate-300 px-3 py-1.5 rounded-full whitespace-nowrap hover:border-blue-500" onclick="sendChatMsg('How many minutes away are you? ⏳')">How many minutes? ⏳</button>
+          <button class="bg-slate-900 border border-white/10 text-[11px] text-slate-300 px-3 py-1.5 rounded-full whitespace-nowrap hover:border-blue-500" onclick="sendChatMsg('Please call me when you arrive 📞')">Please call me 📞</button>
+        </div>
+
+        <!-- Chat Input Form -->
+        <div class="flex gap-2">
+          <input type="text" id="inputChatMsg" class="input-field" placeholder="Type a message to provider..." onkeydown="if(event.key==='Enter') submitChatMsg()" />
+          <button class="w-12 h-11 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl flex items-center justify-center shrink-0 shadow-md" onclick="submitChatMsg()">
+            <i data-lucide="send" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </section>
+
+      <!-- ==================== 6. CLIENT: PROFILE & WALLET ==================== -->
+      <section class="view-screen" id="view-profile">
+        <div class="card flex items-center gap-3.5 mb-4">
+          <div class="avatar-circle">AA</div>
+          <div>
+            <b class="text-base text-white">Abeer Ahmed</b><br>
+            <span class="text-xs text-slate-400">+92 300 1234567</span><br>
+            <span class="text-xs text-amber-400 font-bold">★ 4.95 Verified Client</span>
+          </div>
+        </div>
+
+        <!-- Wallet Card -->
+        <div class="card-highlight text-center mb-4">
+          <span class="text-[11px] font-bold text-slate-400 tracking-wider">AVAILABLE WALLET BALANCE</span>
+          <h2 class="text-3xl font-extrabold text-blue-400 my-1" id="lblWalletBalance">Rs. 1,850</h2>
+          <span class="badge-completed mb-3">Active & Verified</span>
+
+          <div class="grid grid-cols-3 gap-2 mt-2">
+            <button class="btn-secondary !py-2 text-xs" onclick="topUpWallet(500)">+ Rs. 500</button>
+            <button class="btn-secondary !py-2 text-xs" onclick="topUpWallet(1000)">+ Rs. 1,000</button>
+            <button class="btn-secondary !py-2 text-xs" onclick="topUpWallet(2500)">+ Rs. 2,500</button>
+          </div>
+        </div>
+
+        <!-- Menu Actions -->
+        <div class="space-y-2 mb-4">
+          <div class="card flex justify-between items-center !py-3 cursor-pointer hover:border-blue-500" onclick="showToast('Home: House 42, St 15, F-8/2 | Office: F-5/1')">
+            <span class="text-xs font-bold text-slate-200 flex items-center gap-2">📍 Saved Locations</span>
+            <i data-lucide="chevron-right" class="w-4 h-4 text-slate-500"></i>
+          </div>
+          <div class="card flex justify-between items-center !py-3 cursor-pointer hover:border-blue-500" onclick="showToast('Linked: JazzCash (0300-1234567), Visa Debit (•••• 4092)')">
+            <span class="text-xs font-bold text-slate-200 flex items-center gap-2">💳 Payment Methods</span>
+            <i data-lucide="chevron-right" class="w-4 h-4 text-slate-500"></i>
+          </div>
+          <div class="card flex justify-between items-center !py-3 cursor-pointer hover:border-blue-500" onclick="showToast('Helpline 24/7: Police 15 | Rescue 1122 | Support: 051-111-SKILL')">
+            <span class="text-xs font-bold text-slate-200 flex items-center gap-2">🚨 Safety & Emergency Helpline</span>
+            <i data-lucide="chevron-right" class="w-4 h-4 text-slate-500"></i>
+          </div>
+        </div>
+
+        <button class="btn-secondary !text-red-400 !border-red-500/30 hover:!bg-red-500/10" onclick="logout()">
+          <i data-lucide="log-out" class="w-4 h-4"></i> Log Out
+        </button>
+      </section>
+
+      <!-- ==================== 7. PROVIDER / PARTNER MODE ==================== -->
+      <section class="view-screen" id="view-partner">
+        <div class="flex justify-between items-center mb-3">
+          <div class="flex items-center gap-2.5">
+            <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center font-bold text-white text-sm shadow-md">AK</div>
+            <div>
+              <b class="text-sm text-white">Ahmed Khan</b><br>
+              <span class="text-xs text-amber-400 font-bold">★ 4.9 · Top Partner</span>
+            </div>
+          </div>
+          <button class="px-3 py-1.5 rounded-xl text-xs font-bold border" id="btnPartnerStatus" onclick="togglePartnerOnline()">
+            <!-- Rendered by JS -->
+          </button>
+        </div>
+
+        <!-- Performance Stats -->
+        <div class="grid grid-cols-3 gap-2 mb-4">
+          <div class="card !p-3 text-center">
+            <span class="text-[10px] text-slate-400 font-bold">EARNINGS</span>
+            <b class="block text-sm text-blue-400 mt-1" id="lblPartnerEarnings">Rs. 2,400</b>
+          </div>
+          <div class="card !p-3 text-center">
+            <span class="text-[10px] text-slate-400 font-bold">TRIPS</span>
+            <b class="block text-sm text-white mt-1" id="lblPartnerJobs">3</b>
+          </div>
+          <div class="card !p-3 text-center">
+            <span class="text-[10px] text-slate-400 font-bold">ACCEPTANCE</span>
+            <b class="block text-sm text-emerald-400 mt-1">98%</b>
+          </div>
+        </div>
+
+        <!-- Active Execution Job (If Assigned) -->
+        <div id="partnerActiveJobCard" class="card-highlight hidden mb-4">
+          <!-- Rendered by JS -->
+        </div>
+
+        <!-- Incoming Dispatch Queue -->
+        <div class="flex justify-between items-center mb-2.5">
+          <h3 class="font-extrabold text-sm text-slate-200">⚡ Live Dispatch Queue</h3>
+          <span class="text-[11px] text-slate-400">Islamabad Sector F & G</span>
+        </div>
+
+        <div id="partnerQueueContainer" class="space-y-2.5">
+          <!-- Rendered by JS -->
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Bottom Floating Dock Navigation -->
+    <nav class="bottom-nav" id="mainBottomNav">
+      <div class="nav-item active" id="navHome" onclick="navigateTo('home')">
+        <i data-lucide="home"></i>
+        <span>Home</span>
+      </div>
+      <div class="nav-item" id="navBookings" onclick="navigateTo('bookings')">
+        <i data-lucide="calendar"></i>
+        <span>Bookings</span>
+      </div>
+      <div class="nav-item" id="navChat" onclick="navigateTo('chat')">
+        <i data-lucide="message-square"></i>
+        <span>Chat</span>
+      </div>
+      <div class="nav-item" id="navProfile" onclick="navigateTo('profile')">
+        <i data-lucide="user"></i>
+        <span>Profile</span>
+      </div>
+    </nav>
+
+    <!-- ==================== BOTTOM SHEET: NEGOTIATION MODAL ==================== -->
+    <div class="modal-overlay" id="modalNegotiation">
+      <div class="bottom-sheet">
+        <div class="sheet-handle"></div>
+        <div class="flex justify-between items-center mb-2">
+          <b class="text-base text-blue-400 flex items-center gap-1.5"><i data-lucide="handshake" class="w-4 h-4"></i> Live Fare Bidding</b>
+          <span class="badge-pending">Negotiation</span>
+        </div>
+        <p class="text-xs text-slate-400 mb-3" id="negProviderDetails">Provider: <b>Usman Ali</b> (Plumber) • Asking Fare: Rs. 650</p>
+        
+        <label class="block text-xs font-bold text-slate-300 mb-1">Your Counter Bid (Rs.)</label>
+        <div class="flex items-center gap-2 mb-4">
+          <input type="number" id="inputCounterBid" class="input-field text-lg font-bold text-blue-400" value="550" step="50" />
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <button class="btn-primary" onclick="submitCounterBid()">Send Bid ➔</button>
+          <button class="btn-secondary" onclick="closeModal('modalNegotiation')">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== BOTTOM SHEET: CHECKOUT MODAL ==================== -->
+    <div class="modal-overlay" id="modalCheckout">
+      <div class="bottom-sheet">
+        <div class="sheet-handle"></div>
+        <div class="flex justify-between items-center mb-2">
+          <b class="text-base text-emerald-400 flex items-center gap-1.5"><i data-lucide="check-circle" class="w-4 h-4"></i> Confirm Booking</b>
+          <span class="badge-active">Checkout</span>
+        </div>
+        <div class="card !p-3 mb-3" id="checkoutSummaryBox">
+          <!-- Rendered by JS -->
+        </div>
+
+        <label class="block text-xs font-bold text-slate-300 mb-1">Payment Method</label>
+        <select id="selectPaymentMethod" class="input-field mb-4">
+          <option>JazzCash (+92 300 1234567)</option>
+          <option>EasyPaisa</option>
+          <option>SkillLink Wallet (Rs. 1,850)</option>
+          <option>Cash on Delivery</option>
+        </select>
+
+        <div class="grid grid-cols-2 gap-2">
+          <button class="btn-primary" onclick="confirmOrder()">Confirm & Order 🚀</button>
+          <button class="btn-secondary" onclick="closeModal('modalCheckout')">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
